@@ -26,4 +26,11 @@ app.use(express.static("public"))
 //for setting the cookie  in the user browser
 app.use(cookieParser())
 
-export default {app}
+
+//routes import
+import userRouter from './routes/user.routes.js'
+
+//routes delcration
+app.use("/api/v1/users", userRouter)  //jaise hi users url hit hoga, control userRouter ke paas chala jayega
+
+export  {app}
