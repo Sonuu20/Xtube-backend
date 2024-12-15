@@ -11,7 +11,7 @@ const geneteAccessAndRefeshTokens = async (userId) => {
     const user = await User.findById(userId);
 
     const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken(); 
+    const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
@@ -221,7 +221,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken,options)
+      .cookie("refreshToken", newRefreshToken, options)
       .json(
         new ApiResponse(
           200,
@@ -296,7 +296,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   }
 
   await deleteOnCloudinary(req.user?.avatar);
-  
+
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
