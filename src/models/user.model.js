@@ -54,8 +54,9 @@ userSchema.pre("save", async function (next) {
 })
 
 //password checking
-userSchema.methods.isPasswordCorrect = async function (passwrod) {
-   return await bcrypt.compare(passwrod, this.password)
+userSchema.methods.isPasswordCorrect = async function (plainTextPassword) {
+    console.log(plainTextPassword);
+   return await bcrypt.compare(plainTextPassword, this.password)
 }
 
 //generating access token
@@ -76,7 +77,7 @@ userSchema.methods.generateAccessToken = function() {
 }
 
 //generating refresh token
-userSchema.methods.generateRefreshToken = async function() {
+userSchema.methods.generateRefreshToken = function() {
     return jwt.sign(
         { //payload h ye
             _id: this._id,
