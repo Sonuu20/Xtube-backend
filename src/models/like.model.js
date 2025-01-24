@@ -22,4 +22,18 @@ const likeSchema = new Schema(
   { timestamps: true }
 );
 
+// Add a validation to ensure only one of video/comment/tweet is populated
+likeSchema.pre("save", function (next) {
+  const fields = ["video", "comment", "tweet"];
+  const populatedFields = fields.filter((field) => this[field]);
+
+  if (populatedFields.length > 1) {
+    return next(
+      new Error("Only one of video, comment, or tweet can be liked at a time")
+    );
+  }
+
+  next();
+});
+
 export const Like = mongoose.model("Like", likeSchema);
