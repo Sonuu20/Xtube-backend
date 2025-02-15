@@ -94,7 +94,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, video, "Vidoes fetched successfully"));
+    .json(new ApiResponse(200, video[0], "Vidoes fetched successfully"));
 });
 
 //for uploading the vedio on the cloudinary
@@ -108,12 +108,13 @@ const publishAVideo = asyncHandler(async (req, res) => {
   }
 
   //to get the localpath of both the files
-  const vedioFileLocalPath = req.files?.vedioFile[0].path;
+  const videoFileLocalPath = req.files?.videoFile[0].path;
   const thumbnailLocalPath = req.files?.thumbnail[0].path;
+  //console.log(videoFileLocalPath);
 
   //checking for error
-  if (!vedioFileLocalPath) {
-    throw new ApiError(400, "vedioFileLocalPath is required");
+  if (!videoFileLocalPath) {
+    throw new ApiError(400, "videoFileLocalPath is required");
   }
 
   if (!thumbnailLocalPath) {
@@ -121,20 +122,21 @@ const publishAVideo = asyncHandler(async (req, res) => {
   }
 
   //uploading the file on the cloudinary
-  const vedioFile = await uploadOnCloudinary(vedioFileLocalPath);
+  const videoFile = await uploadOnCloudinary(videoFileLocalPath);
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+  //console.log("hiii",videoFile);
 
-  if (!vedioFile) throw new ApiError(500, "Error while uploading vedioFile");
+  if (!videoFile) throw new ApiError(500, "Error while uploading videoFile");
   if (!thumbnail) throw new ApiError(400, "Error while uploading thumbnail");
 
   //creating the new vedio document
   const vedio = await Video.create({
     title,
     description: description || "No description provided",
-    duration: vedioFile.duration,
-    vedioFile: {
-      url: vedioFile.url,
-      public_id: vedioFile.public_id,
+    duration: videoFile.duration,
+    videoFile: {
+      url: videoFile.url,
+      public_id: videoFile.public_id,
     },
     thumbnail: {
       url: thumbnail.url,
