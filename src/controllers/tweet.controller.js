@@ -1,6 +1,5 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { Tweet } from "../models/tweet.model.js";
-import { User } from "../models/user.model.js";
 import { Like } from "../models/like.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
@@ -10,6 +9,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 const createTweet = asyncHandler(async (req, res) => {
   //1.getting the content
   const { content } = req.body;
+  console.log(content);
 
   //2.verifying new document
   if (!content) throw new ApiError(400, "Content is required");
@@ -84,7 +84,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
         //finding if the tweet has himself liked by the user
         isLiked: {
           $cond: {
-            if: { $in: [req.user?._id, "likeDetails.likedBy"] },
+            if: { $in: [req.user?._id, "$likeDetails.likedBy"] },
             then: true,
             else: false,
           },
